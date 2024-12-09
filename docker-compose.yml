@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  # Servicio de MongoDB
+  # El nombre del base_mongo se debe poner en el link porque eso hace referencia a la dependencia
+  # Si no se le pone con ese nombre al momento de querer ejecutar va a dar error en la conexión
+  base_mongoDB:
+    image: mongo:latest
+    container_name: base_mongoDB
+    ports:
+      - "${PORT_MONGODB}:${PORT_MONGODB}"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - app-network
+
+  # Servicio de la verificación en 2 pasos
+  verificacion_2pasos:
+    build: ./Microservicios/Verificacion_2Pasos
+    container_name: verificacion_2pasos
+    ports:
+      - "${PORT_VERIFICACION_2PASOS}:${PORT_VERIFICACION_2PASOS}"  # Mapeo del puerto 4000
+  
+    depends_on:
+      - base_mongoDB
+      - verificacion_whatsapp  # Asegura que el servicio de WhatsApp esté disponible
+
+    environment:
+      - MONGO_URI=${URL_MONGODB}  # URL directamente aquí
+    networks:
+      - app-network
+    volumes:
+      - ./Microservicios/Verificacion_2Pasos:/servidor
+
+
+  verificacion_whatsapp:
+    build: ./Microservicios/Verificacion_Whatsapp
+    container_name: verificacion_whatsapp
+    ports:
+      - "${PORT_VERIFICACION_WHATSAPP}:${PORT_VERIFICACION_WHATSAPP}"
+    volumes:
+      - ./Microservicios/Verificacion_Whatsapp:/servidor  # Monta el código fuente en el contenedor
+    networks:
+      - app-network
+
+  # Servicio del Frontend
+  frontend:
+    build:
+      context: ./Frontend # En donde se encuentra el archivo Dockerfile
+    container_name: frontend
+    ports:
+      - "${PORT_FRONTEND}:${PORT_FRONTEND}"  # Mapea el puerto 3000
+    volumes:
+      - ./Frontend:/servidor  # Monta el código fuente en el contenedor
+    
+    depends_on:
+      - verificacion_2pasos  # Asegura que el backend se ejecute primero
+
+    networks:
+      - app-network # Si no se coloca en la misma red no van a poder interactuar
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mongodb_data:
+    driver: local
+

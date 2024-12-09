@@ -1,0 +1,22 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "description": "Parte visual del proyecto",
+  "main": "servidor.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node servidor.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "SebastianWebApp"
+  },
+  "author": "Mateo Espinosa",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "2.8.5",
+    "dotenv": "16.4.7",
+    "express": "4.21.2"
+  }
+}
