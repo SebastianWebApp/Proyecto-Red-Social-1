@@ -9,6 +9,9 @@ services:
     container_name: base_mongoDB
     ports:
       - "${PORT_MONGODB}:${PORT_MONGODB}"
+    
+    restart: always # Reinicio del microservicio en caso de fallo
+
     volumes:
       - mongodb_data:/data/db
     networks:
@@ -27,6 +30,9 @@ services:
 
     environment:
       - MONGO_URI=${URL_MONGODB}  # URL directamente aquí
+    
+    restart: always # Reinicio del microservicio en caso de fallo
+
     networks:
       - app-network
     volumes:
@@ -38,6 +44,9 @@ services:
     container_name: verificacion_whatsapp
     ports:
       - "${PORT_VERIFICACION_WHATSAPP}:${PORT_VERIFICACION_WHATSAPP}"
+
+    restart: always # Reinicio del microservicio en caso de fallo
+
     volumes:
       - ./Microservicios/Verificacion_Whatsapp:/servidor  # Monta el código fuente en el contenedor
     networks:
@@ -53,6 +62,9 @@ services:
     volumes:
       - ./Frontend:/servidor  # Monta el código fuente en el contenedor
     
+    restart: always # Reinicio del microservicio en caso de fallo
+
+
     depends_on:
       - verificacion_2pasos  # Asegura que el backend se ejecute primero
 
