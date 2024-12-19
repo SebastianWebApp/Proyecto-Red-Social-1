@@ -42,7 +42,7 @@ document.getElementById("Btn_Crear_Cuenta").addEventListener('click',async () =>
 
     // Hacemos una solicitud al servidor cuando se haga clic
 
-    const Solicitud = await fetch(`api/crear_cuenta/Crear`, {
+    const Solicitud = await fetch(`api/crear_cuenta/Nueva_Cuenta`, {
         method: "POST",  // Cambiar a POST
         headers: {
             "Content-Type": "application/json"  // Especificamos que los datos están en formato JSON
@@ -50,7 +50,7 @@ document.getElementById("Btn_Crear_Cuenta").addEventListener('click',async () =>
         body: JSON.stringify({
             Usuario: Usuario,
             Telefono: Telefono,
-            Clave: Clave 
+            Clave: Clave
         })
     });
     

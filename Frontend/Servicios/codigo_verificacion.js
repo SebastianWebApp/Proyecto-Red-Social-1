@@ -7,7 +7,7 @@ dotenv.config();
 const Api_Verificacion_2Pasos = process.env.API_VERIFICACION_2PASOS;
 
 
-export const Crear = async(req, res) =>{
+export async function Crear_Codigo_Verificacion(req, res) {
 
     const Parametros = req.body;
 
@@ -30,20 +30,24 @@ export const Crear = async(req, res) =>{
 
         const Respuesta_Servidor = await Solicitud.json();
 
-        if(Respuesta_Servidor.Estado){           
-
-            res.status(200).json({  // En caso de no encontrar el documento
+        if(Respuesta_Servidor.Estado){    
+            
+            const Respuesta = {
                 Estado: true,
                 Respuesta: "Se le enviara el código de acceso a su WhatsApp"
-            });
+            }
+
+            return Respuesta;
         
         }
         else{
 
-            res.status(400).json({  // En caso de no encontrar el documento
+            const Respuesta = {
                 Estado: false,
-                Respuesta: "Intente de nuevo"
-            });
+                Respuesta: Respuesta_Servidor.Respuesta
+            }
+
+            return Respuesta;
 
         }
 
@@ -51,17 +55,20 @@ export const Crear = async(req, res) =>{
 
     } catch (error) {
 
-        res.status(400).json({  // En caso de no encontrar el documento
+        const Respuesta = {
             Estado: false,
-            Respuesta: error.message || error
-        });
+            Respuesta: "Intente de nuevo"
+        }
+
+        return Respuesta;
+
 
     }
 
 }
 
 
-export const Leer = async(req, res) =>{ 
+export async function Leer_Codigo_Verificacion(req, res){ 
     
     const Parametros = req.body;
 
@@ -75,48 +82,41 @@ export const Leer = async(req, res) =>{
 
         if(Respuesta_Servidor.Estado){
 
-            Eliminar(Parametros.Telefono).then(Respuesta => {
+            const Respuesta = {
+                Estado: true,
+                Respuesta: Respuesta_Servidor.Respuesta
+            }
 
-                if(Respuesta){
-                    res.status(200).json({  // En caso de no encontrar el documento
-                        Estado: true,
-                        Respuesta: "Listo Iniciar"
-                    });
-                }
-                else{
-                    res.status(400).json({  // En caso de no encontrar el documento
-                        Estado: false,
-                        Respuesta: "Intente de nuevo"
-                    });
-                }
-
-            }).catch(error => {
-                res.status(400).json({  // En caso de no encontrar el documento
-                    Estado: false,
-                    Respuesta: "Intente de nuevo"
-                });
-            })
+            return Respuesta;
 
         }
 
         else{
 
-            res.status(400).json({  // En caso de no encontrar el documento
+
+            const Respuesta = {
                 Estado: false,
                 Respuesta: Respuesta_Servidor.Respuesta
-            });
+            }
+
+            return Respuesta;
+
+           
 
         }
 
-    } catch (error) {        
-        res.status(400).json({  // En caso de no encontrar el documento
+    } catch (error) {      
+
+        const Respuesta = {
             Estado: false,
             Respuesta: "Intente de nuevo"
-        });
+        }
+
+        return Respuesta;
     }
 }
 
-async function Eliminar(Telefono) {
+export async function Eliminar_Codigo_Verificacion(Telefono) {
 
     try {
         
@@ -128,21 +128,36 @@ async function Eliminar(Telefono) {
     
         if(Respuesta_Servidor.Estado){
 
-            return true;
+            const Respuesta = {
+                Estado: true,
+                Respuesta: Respuesta_Servidor.Respuesta
+            }
+    
+            return Respuesta;
+
     
     
         }
         else{
 
-            return false;
+            const Respuesta = {
+                Estado: false,
+                Respuesta: Respuesta_Servidor.Respuesta
+            }
+    
+            return Respuesta;
     
 
         }
 
     } catch (error) {
         
-        return false;
+        const Respuesta = {
+            Estado: false,
+            Respuesta: "Intente de nuevo"
+        }
 
+        return Respuesta;
 
     }
     
@@ -166,3 +181,4 @@ function generarCodigoDe6Digitos(Telefono) {
     // Asegurarse de que sea un código de 6 dígitos y rellenar con ceros si es necesario
     return codigo.toString().padStart(6, '0');
 }
+

@@ -7,7 +7,7 @@ import router from "./Routers/routers_mongo.js";
 
 dotenv.config();
 
-const PORT = process.env.PORT  || 4000;
+const PORT = process.env.PORT;
 const CORS_ORIGEN = process.env.CORS_ORIGEN;
 
 const app = express();
@@ -35,6 +35,7 @@ connectToDB();
 
 app.use("/api/verificacion_2pasos",router);
 
+
 app.use((req, res) => {
     res.status(404).json({ 
         Estado: false,
@@ -42,7 +43,6 @@ app.use((req, res) => {
 
      });
 });
-
 
 app.listen(PORT, () => {
     console.log(`Servidor Activo http://localhost:${PORT}`);

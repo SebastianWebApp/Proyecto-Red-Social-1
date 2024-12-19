@@ -9,7 +9,7 @@ const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = twilio(accountSid, authToken);
 
-const PORT = process.env.PORT || 4001;
+const PORT = process.env.PORT;
 const CORS_ORIGEN = process.env.CORS_ORIGEN;
 const app = express();
 
@@ -45,12 +45,27 @@ app.post("/api/Codigo_Verificacion", async (req, res) => {
 });
 
 // Middleware de manejo de errores (siempre al final)
+
+
+
+
 app.use((err, req, res, next) => {
   res.status(500).json({
     Estado: false,
     Respuesta: "Error interno del servidor",
   });
 });
+
+
+app.use((req, res) => {
+    res.status(404).json({ 
+        Estado: false,
+        Respuesta: "Recurso no encontrado"
+
+     });
+});
+
+
 
 // Iniciar el servidor
 app.listen(PORT, () => {

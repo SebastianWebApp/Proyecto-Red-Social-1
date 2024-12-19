@@ -1,10 +1,10 @@
 FROM node:22-bullseye
-WORKDIR /Frontend
+WORKDIR /Microservicios/Inicio_Sesion
 
 COPY . .
 
 RUN npm install
 
-EXPOSE 3000
+EXPOSE 4002
 
 CMD ["npm","start"]

@@ -1,6 +1,9 @@
 version: '3.8'
 
 services:
+
+  # <-------------------------------------- Bases de datos ---------------------------------------------------->
+
   # Servicio de MongoDB
   # El nombre del base_mongo se debe poner en el link porque eso hace referencia a la dependencia
   # Si no se le pone con ese nombre al momento de querer ejecutar va a dar error en la conexión
@@ -16,6 +19,27 @@ services:
       - mongodb_data:/data/db
     networks:
       - app-network
+
+  base_mysql:
+    image: mysql:latest
+    container_name: base_mysql
+    ports:
+      - "3307:${PORT_MYSQL}" # Puerto para conectar MySQL
+
+    environment:
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"   # Contraseña del usuario root
+
+    # Se coloca esta parte para que si ocurre un error se reinicie de forma automática
+    restart: always # Reinicia automáticamente en caso de error
+
+
+    volumes:
+      - mysql_data:/var/lib/mysql # Volumen persistente para datos
+    networks:
+      - app-network
+
+
+  # <-------------------------------------- Microservicios ---------------------------------------------------->
 
   # Servicio de la verificación en 2 pasos
   verificacion_2pasos:
@@ -52,6 +76,28 @@ services:
     networks:
       - app-network
 
+  
+  inicio_sesion:
+    build: ./Microservicios/Inicio_Sesion
+    container_name: inicio_sesion
+    ports:
+      - "${PORT_INICIO_SESION}:${PORT_INICIO_SESION}"  # Mapeo del puerto 4000
+  
+    depends_on:
+      - base_mysql
+
+    
+    restart: always # Reinicio del microservicio en caso de fallo
+
+    networks:
+      - app-network
+    volumes:
+      - ./Microservicios/Inicio_Sesion:/servidor
+
+
+
+  # <-------------------------------------- Frontend ---------------------------------------------------->
+
   # Servicio del Frontend
   frontend:
     build:
@@ -66,7 +112,8 @@ services:
 
 
     depends_on:
-      - verificacion_2pasos  # Asegura que el backend se ejecute primero
+      - inicio_sesion # Asegura que el backend se ejecute primero
+      - verificacion_2pasos  
 
     networks:
       - app-network # Si no se coloca en la misma red no van a poder interactuar
@@ -78,4 +125,6 @@ networks:
 volumes:
   mongodb_data:
     driver: local
-
+  
+  mysql_data:  # Define el volumen faltante
+    driver: local

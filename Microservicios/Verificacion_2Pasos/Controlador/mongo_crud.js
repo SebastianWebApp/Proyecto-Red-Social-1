@@ -17,7 +17,7 @@ export const Leer_Codigo = async(req, res) =>{
 
             res.status(404).json({  // En caso de no encontrar el documento
                 Estado: false,
-                Respuesta: "Documento no encontrado"
+                Respuesta: "Código de verificación inexistente"
             });
 
             return;
@@ -142,7 +142,7 @@ export const Eliminar_Codigo = async (req, res) =>{
         res.status(400).json({
 
             Estado: false,
-            Respuesta: "Error al crear el campo, intente de nuevo"
+            Respuesta: "Error al eliminar el campo, intente de nuevo"
 
         });
 

@@ -8,7 +8,7 @@ import router from "./Routers/routers_crear_cuenta.js";
 
 // Permitimos la conexión con el .env
 dotenv.config();
-const PORT = process.env.PORT  || 3000;
+const PORT = process.env.PORT;
 
 // Obtenemos la dirección de los elementos
 const __filename = fileURLToPath(import.meta.url);
