@@ -36,6 +36,10 @@ app.get("/codigo_verificacion", (req,res) =>{
     res.sendFile(path.join(__dirname,"views","codigo_verificacion.html"));
 });
 
+app.get("/olvide_password", (req,res) =>{
+    res.sendFile(path.join(__dirname,"views","olvide_password.html"));
+});
+
 
 app.use("/api/crear_cuenta",router);
 
@@ -46,7 +50,6 @@ app.use((req, res) => {
 });
 
 // Iniciar Servidor
-
 app.listen(PORT, () => {
     console.log(`Servidor Activo http://localhost:${PORT}`);
 });

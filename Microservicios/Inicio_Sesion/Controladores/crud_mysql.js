@@ -6,7 +6,7 @@ export const Leer_Base_ID = async (req,res) => {
 
     try {
 
-        const [rows] = await connectToDB.query("SELECT Id, Teléfono, Clave FROM Lista_Usuarios WHERE Id = ?", [Id]);
+        const [rows] = await connectToDB.query("SELECT Id, Teléfono, Clave, IV FROM Lista_Usuarios WHERE Id = ?", [Id]);
 
         if(rows.length > 0){
 
@@ -19,7 +19,8 @@ export const Leer_Base_ID = async (req,res) => {
                 Contenido: {
                     Id: Usuario.Id,
                     Telefono: Usuario.Teléfono,
-                    Clave: Usuario.Clave
+                    Clave: Usuario.Clave,
+                    IV: Usuario.IV
                 }
     
             });
@@ -54,7 +55,7 @@ export const Crear_Usuario = async (req, res) =>{
     const Parametros = req.body;
 
     try {
-        const [result] = await connectToDB.query("INSERT INTO Lista_Usuarios (Id, Teléfono, Clave) VALUES (?, ?, ?)", [Parametros.Id, Parametros.Telefono, Parametros.Clave]);
+        const [result] = await connectToDB.query("INSERT INTO Lista_Usuarios (Id, Teléfono, Clave, IV) VALUES (?, ?, ?, ?)", [Parametros.Id, Parametros.Telefono, Parametros.Clave, Parametros.IV]);
         res.status(200).json({
 
             Estado: true,
@@ -75,7 +76,7 @@ export const Actualizar_Usuario = async (req, res) =>{
     const Parametros = req.body;
 
     try {
-        const [result] = await connectToDB.query("UPDATE Lista_Usuarios SET Teléfono = ?, Clave = ? WHERE Id = ?", [Parametros.Telefono, Parametros.Clave, Parametros.Id]);
+        const [result] = await connectToDB.query("UPDATE Lista_Usuarios SET Teléfono = ?, Clave = ?, IV = ? WHERE Id = ?", [Parametros.Telefono, Parametros.Clave, Parametros.Id , Parametros.IV]);
         if (result.affectedRows > 0) {
 
             res.status(200).json({

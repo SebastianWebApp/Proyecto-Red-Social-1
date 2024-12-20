@@ -1,3 +1,4 @@
+import {Encriptar} from "./encriptacion.js";
 import dotenv from "dotenv";
 
 
@@ -23,6 +24,7 @@ export async function Leer_Cuenta(req,res){
 
 
         if(Solicitud.status === 200){
+
 
             const Respuesta = {
                 Estado: true,
@@ -84,6 +86,10 @@ export async function Crear_Usuario(req,res) {
 
     try {
 
+        const Clave_Encriptada = Encriptar(Parametro.Clave);
+        const Telefono_Encriptada = Encriptar(Parametro.Telefono);
+
+
         const Solicitud = await fetch(Api_Inicio_Sesion + "/Crear_Usuario",{
             method: "POST",  // Cambiar a POST
             headers: {
@@ -92,8 +98,9 @@ export async function Crear_Usuario(req,res) {
             body: JSON.stringify({
 
                 Id: Parametro.Usuario,
-                Telefono: Parametro.Telefono,
-                Clave: Parametro.Clave
+                Telefono: Telefono_Encriptada.encriptado,
+                Clave: Clave_Encriptada.encriptado,
+                IV: Clave_Encriptada.iv
 
             })
         });
@@ -144,6 +151,11 @@ export async function Actualizar_Usuario(req,res) {
 
     try {
 
+        
+        const Clave_Encriptada = Encriptar(Parametro.Clave);
+        const Telefono_Encriptada = Encriptar(Parametro.Telefono);
+
+
         const Solicitud = await fetch(Api_Inicio_Sesion + "/Actualizar_Usuario",{
             method: "POST",  // Cambiar a POST
             headers: {
@@ -152,8 +164,9 @@ export async function Actualizar_Usuario(req,res) {
             body: JSON.stringify({
 
                 Id: Parametro.Usuario,
-                Telefono: Parametro.Telefono,
-                Clave: Parametro.Clave
+                Telefono: Telefono_Encriptada.encriptado,
+                Clave: Clave_Encriptada.encriptado,
+                IV: Clave_Encriptada.iv
 
             })
         });

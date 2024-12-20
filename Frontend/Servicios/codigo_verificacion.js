@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import crypto from "node:crypto";
+import {Encriptar} from "./encriptacion.js";
 
 
 dotenv.config();
@@ -14,7 +14,15 @@ export async function Crear_Codigo_Verificacion(req, res) {
 
     try {
 
-        const Codigo = generarCodigoDe6Digitos(Parametros.Telefono);
+        var random = generarAleatorio(16);
+
+        const  Codigo_Encriptado = Encriptar(Parametros.Telefono + random);
+
+
+        // Tomar los primeros 6 dígitos numéricos del hash
+        const Codigo = parseInt(Codigo_Encriptado.encriptado.replace(/\D/g, '').slice(0, 6), 10);
+
+        
 
         
         const Solicitud = await fetch(`${Api_Verificacion_2Pasos}/Crear`, {
@@ -24,7 +32,7 @@ export async function Crear_Codigo_Verificacion(req, res) {
             },
             body: JSON.stringify({
                 _id: Parametros.Telefono,
-                Codigo: Codigo  // Los datos que deseas enviar en el cuerpo de la solicitud
+                Codigo: Codigo.toString().padStart(6, '0')  // Los datos que deseas enviar en el cuerpo de la solicitud
             })
         });
 
@@ -74,11 +82,13 @@ export async function Leer_Codigo_Verificacion(req, res){
 
     try {
 
+
         const Leer_Codigo = await fetch(`${Api_Verificacion_2Pasos}/Leer/${encodeURIComponent(Parametros.Telefono)}/${encodeURIComponent(Parametros.Codigo)}`,{
             method: "GET"
         });
 
         const Respuesta_Servidor = await Leer_Codigo.json();
+
 
         if(Respuesta_Servidor.Estado){
 
@@ -105,7 +115,8 @@ export async function Leer_Codigo_Verificacion(req, res){
 
         }
 
-    } catch (error) {      
+    } catch (error) {   
+        
 
         const Respuesta = {
             Estado: false,
@@ -164,21 +175,11 @@ export async function Eliminar_Codigo_Verificacion(Telefono) {
 }
 
 
-function generarCodigoDe6Digitos(Telefono) {
-    // Usar el número de teléfono y la fecha actual
-    const fecha = new Date().toISOString(); // Fecha en formato ISO para mayor precisión
-    const telefonoNumerico = Telefono.toString(); // Convertir el teléfono a cadena
-
-    // Concatenar el teléfono y la fecha para crear un texto base
-    const textoBase = telefonoNumerico + fecha;
-
-    // Crear un hash usando SHA256 para obtener una cadena de caracteres encriptada
-    const hash = crypto.createHash('sha256').update(textoBase).digest('hex');
-
-    // Tomar los primeros 6 dígitos numéricos del hash
-    const codigo = parseInt(hash.replace(/\D/g, '').slice(0, 6), 10);
-
-    // Asegurarse de que sea un código de 6 dígitos y rellenar con ceros si es necesario
-    return codigo.toString().padStart(6, '0');
+function generarAleatorio(longitud) {
+    const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let resultado = '';
+    for (let i = 0; i < longitud; i++) {
+        resultado += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
+    }
+    return resultado;
 }
-

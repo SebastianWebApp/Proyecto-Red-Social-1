@@ -30,7 +30,8 @@ const crearTabla = async () => {
         await connectToDB.query(`CREATE TABLE IF NOT EXISTS Lista_Usuarios (
             Id VARCHAR(100) PRIMARY KEY,
             Teléfono VARCHAR(100) NOT NULL,
-            Clave VARCHAR(100) NOT NULL
+            Clave VARCHAR(100) NOT NULL,
+            IV VARCHAR(100) NOT NULL
             );`
         );
         console.log("Tabla 'Lista_Usuarios' creada (si no existía).");
